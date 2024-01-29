@@ -1,3 +1,4 @@
+// import CollectionCard from "@/components/CollectionCard";
 import CreateCollectionBtn from "@/components/CreateCollectionBtn";
 import SadFace from "@/components/icons/SadFace";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -10,17 +11,18 @@ export default async function Home() {
   return (
     <>
       <Suspense fallback={<WelcomeMsgFallback />}>
-        <WelcomeMsg />
+        <WelcomMsg />
       </Suspense>
-      <Suspense>
+      <Suspense fallback={<div>Loading collections...</div>}>
         <CollectionList />
       </Suspense>
     </>
   );
 }
 
-async function WelcomeMsg() {
+async function WelcomMsg() {
   const user = await currentUser();
+
   if (!user) {
     return <div>error</div>;
   }
@@ -33,10 +35,11 @@ async function WelcomeMsg() {
     </div>
   );
 }
+
 function WelcomeMsgFallback() {
   return (
-    <div className="flex w-full  mb-12">
-      <h1 className="text-4xl flex flex-col gap-2 font-bold">
+    <div className="flex w-full mb-12">
+      <h1 className="text-4xl font-bold">
         <Skeleton className="w-[180px] h-[36px]" />
         <Skeleton className="w-[150px] h-[36px]" />
       </h1>
@@ -46,15 +49,15 @@ function WelcomeMsgFallback() {
 
 async function CollectionList() {
   const user = await currentUser();
-  const collection = await prisma.collection.findMany({
+  const collections = await prisma.collection.findMany({
     where: {
       userId: user?.id,
     },
   });
 
-  if (collection.length === 0) {
+  if (collections.length === 0) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-5">
         <Alert>
           <SadFace />
           <AlertTitle>There are no collections yet!</AlertTitle>
@@ -66,4 +69,22 @@ async function CollectionList() {
       </div>
     );
   }
+
+  return (
+    <div>
+      Collections: {collections.length}
+      <CreateCollectionBtn />
+    </div>
+  );
+
+  //   return (
+  //     <>
+  //       <CreateCollectionBtn />
+  //       <div className="flex flex-col gap-4 mt-6">
+  //         {/* {collections.map((collection) => (
+  //           <CollectionCard key={collection.id} collection={collection} />
+  //         ))} */}
+  //       </div>
+  //     </>
+  //   );
 }

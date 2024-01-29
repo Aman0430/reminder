@@ -6,6 +6,7 @@ import NavBar from "@/components/NavBar";
 import { ThemeProvider } from "@/providers/ThemeProvider";
 import { cn } from "@/lib/utils";
 import { Separator } from "@/components/ui/separator";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -35,6 +36,7 @@ export default function RootLayout({
               <Separator />
               <main className="flex flex-grow w-full justify-center items-center dark:bg-neutral-950">
                 {children}
+                <Toaster />
               </main>
             </div>
           </ThemeProvider>
